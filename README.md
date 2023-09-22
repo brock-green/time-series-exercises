@@ -1,0 +1,1 @@
+This repo holds the exercises for Time Series Analysis Methodology.
