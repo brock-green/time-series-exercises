@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import requests
+from env import host, user, password, create_url
 
 def retrieve_swapi_data(data_type):
     '''
@@ -71,3 +72,27 @@ def get_german_power():
     power = pd.read_csv('https://raw.githubusercontent.com/jenfly/opsd/master/opsd_germany_daily.csv')
     
     return power
+
+def get_store_data():
+    '''
+    Checks to see if tsa_item_demand exists. If it does the csv is read in to a df. If not Codeup cloud server is accessed to retrieve data, then cached to csv.
+    Returns a dataframe of all store data in the tsa_item_demand.
+    '''
+    
+    if os.path.exists('tsa_store_data.csv'):
+        df = pd.read_csv('tsa_store_data.csv')
+        
+    else:
+          
+        url = create_url('tsa_item_demand')
+
+        query = '''
+                SELECT *
+                FROM items
+                JOIN sales USING(item_id)
+                JOIN stores USING(store_id)
+                '''
+
+        df = pd.read_sql(query, url)
+        df.to_csv('tsa_store_data.csv', index=False)
+    return df
