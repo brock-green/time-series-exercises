@@ -36,10 +36,8 @@ def prep_german_power(df):
     df['year'] = df.index.year
     
     # fill missing values
-    # use bfill for wind, solar, wind_and_solar
-    df.wind.bfill(inplace=True)
-    df.solar.bfill(inplace=True)
-    df.wind_and_solar.bfill(inplace=True)
+    # fill nulls for wind, solar, wind_and_solar with 0
+    df = df.fillna(0)
     
     return df
 
