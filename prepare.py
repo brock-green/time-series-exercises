@@ -22,8 +22,7 @@ def prep_german_power(df):
     '''
     # change column names to lowercase
     df.columns = df.columns.str.lower()
-    # rename 'wind+solar' to 'wind_and_solar'
-    df.rename(columns={'wind+solar': 'wind_and_solar'}, inplace=True)
+
     
     # convert date column to datetime
     df.date = pd.to_datetime(df.date)
@@ -32,11 +31,16 @@ def prep_german_power(df):
     df = df.set_index('date').sort_index()
     
     # add month and year column
-    df['month'] = df.index.month_name()
+    df['month'] = df.index.month
     df['year'] = df.index.year
     
     # fill missing values
-    # fill nulls for wind, solar, wind_and_solar with 0
+    # fill make new column with total of wind and solar for missing wind+solar
+    df['wind_and_solar'] = df['wind'] + df['solar']
+    
+    df = df.drop(columns=['wind+solar'])
+    
+    # fill missing values
     df = df.fillna(0)
     
     return df
@@ -68,7 +72,7 @@ def prep_store_data(df):
     df = df.set_index('sale_date').sort_index()
     
     # add 'month' and 'day_of_week' columns
-    df['month'] = df.index.month_name()
+    df['month'] = df.index.month
     df['day_of_week'] = df.index.day_of_week
     
     # Add a column to dataframe, sales_total, which is a derived from sale_amount (total items) and item_price
